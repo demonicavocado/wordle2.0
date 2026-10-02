@@ -1,1 +1,166 @@
 
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wordle</title>
+
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 30px;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(5, 60px);
+            gap: 5px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .tile {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+
+        .correct {
+            background-color: #538d4e;
+        }
+
+        .wrong-place {
+            background-color: #b59f3b;
+        }
+
+        .not-in-word {
+            background-color: #3a3a3c;
+        }
+
+        input {
+            margin-top: 30px;
+            padding: 10px;
+            font-size: 20px;
+            text-transform: lowercase;
+            width: 150px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin-left: 5px;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>WORDLE</h1>
+
+    <div id="board"></div>
+
+    <input id="guess" maxlength="5" placeholder="Guess">
+    <button onclick="submitGuess()">Enter</button>
+
+    <div id="message"></div>
+
+    <script>
+
+        const answer = "cuppy";
+
+        let row = 0;
+
+        const board = document.getElementById("board");
+
+        // Create the 6 x 5 board
+        for (let i = 0; i < 30; i++) {
+            const tile = document.createElement("div");
+            tile.classList.add("tile");
+            board.appendChild(tile);
+        }
+
+        function submitGuess() {
+
+            if (row >= 6) {
+                return;
+            }
+
+            let input = document.getElementById("guess");
+            let guess = input.value.toLowerCase();
+
+            // Accept ANY 5-letter word
+            if (guess.length !== 5) {
+                document.getElementById("message").textContent =
+                    "Your guess must be 5 letters!";
+                return;
+            }
+
+            const tiles = document.querySelectorAll(".tile");
+
+            // Display the guess
+            for (let i = 0; i < 5; i++) {
+
+                tiles[row * 5 + i].textContent = guess[i];
+
+                if (guess[i] === answer[i]) {
+                    tiles[row * 5 + i].classList.add("correct");
+
+                } else if (answer.includes(guess[i])) {
+                    tiles[row * 5 + i].classList.add("wrong-place");
+
+                } else {
+                    tiles[row * 5 + i].classList.add("not-in-word");
+                }
+            }
+
+            // Check if the answer was found
+            if (guess === answer) {
+                document.getElementById("message").textContent =
+                    "🎉 You got it!";
+
+                input.disabled = true;
+                return;
+            }
+
+            row++;
+
+            if (row === 6) {
+                document.getElementById("message").textContent =
+                    "The answer was CUPPY!";
+                input.disabled = true;
+            }
+
+            input.value = "";
+            input.focus();
+        }
+
+        // Press Enter to submit
+        document.getElementById("guess").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                submitGuess();
+            }
+        });
+
+    </script>
+
+</body>
+</html>
+```
